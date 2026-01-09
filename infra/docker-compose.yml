@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.4
+    environment:
+      POSTGRES_DB: civicreport
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio:RELEASE.2024-02-17T01-15-57Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+  minio-init:
+    image: minio/mc:RELEASE.2024-02-14T21-49-43Z
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set local http://minio:9000 minio minio123 &&
+      /usr/bin/mc mb --ignore-existing local/civicreport &&
+      /usr/bin/mc anonymous set download local/civicreport;
+      exit 0;
+      "
+
+  api:
+    build:
+      context: ../src/api
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=civicreport;Username=postgres;Password=postgres
+      Jwt__Key: dev-secret-key
+      Jwt__Issuer: civicreport
+      Jwt__Audience: civicreport
+      Otp__Secret: otp-secret
+      S3__ServiceUrl: http://localhost:9000
+      S3__AccessKey: minio
+      S3__SecretKey: minio123
+      S3__Bucket: civicreport
+      S3__PublicUrlBase: http://localhost:9000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+      - minio
+      - minio-init
+
+  worker:
+    build:
+      context: ../src/worker
+      dockerfile: Dockerfile
+    environment:
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=civicreport;Username=postgres;Password=postgres
+    depends_on:
+      - postgres
+
+  dashboard:
+    build:
+      context: ../src/dashboard
+      dockerfile: Dockerfile
+    environment:
+      VITE_API_URL: http://localhost:5000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  minio_data:

@@ -1,0 +1,102 @@
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: #f5f7fb;
+  color: #1f2937;
+}
+
+.container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  margin: 0;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  display: grid;
+  gap: 12px;
+  max-width: 320px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+input, select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #6b7280;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.map-section {
+  height: 420px;
+}
+
+.map {
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table-section {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  overflow-x: auto;
+}
+
+.table-section table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table-section th,
+.table-section td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.message {
+  color: #2563eb;
+}
