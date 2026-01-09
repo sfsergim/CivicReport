@@ -1,0 +1,51 @@
+### Request OTP (dev retorna otp_code)
+POST http://localhost:5000/auth/request-otp
+Content-Type: application/json
+
+{
+  "phone": "+5511990000000",
+  "name": "Admin Dev"
+}
+
+### Verify OTP
+POST http://localhost:5000/auth/verify-otp
+Content-Type: application/json
+
+{
+  "phone": "+5511990000000",
+  "otp": "123456"
+}
+
+### Request upload
+POST http://localhost:5000/reports/request-upload
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "contentType": "image/jpeg"
+}
+
+### Create report
+POST http://localhost:5000/reports
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "category": "Dengue",
+  "description": "Foco de dengue perto do posto",
+  "lat": -22.7,
+  "lng": -47.6,
+  "accuracyMeters": 25,
+  "fileKey": "{{fileKey}}"
+}
+
+### Feed público
+GET http://localhost:5000/feed
+
+### Admin reports
+GET http://localhost:5000/admin/reports?status=NeedsReview
+Authorization: Bearer {{token}}
+
+### Export CSV
+GET http://localhost:5000/admin/reports/export.csv
+Authorization: Bearer {{token}}
